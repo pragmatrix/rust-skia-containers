@@ -12,12 +12,12 @@ RUN powershell -Command \
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')); \
     choco feature disable --name showDownloadProgress
 
-RUN choco install -y git
-RUN choco install -y python2 --version 2.7.18
-RUN choco install -y llvm --version 11.0.0
-RUN choco install -y rust-ms --version 1.48.0
-RUN choco install -y visualstudio2019buildtools --version 16.8.3 \
-    --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended"
+RUN choco install -y git \
+    && choco install -y python2 --version 2.7.18 \
+    && choco install -y llvm --version 11.0.0 \
+    && choco install -y rust-ms --version 1.48.0 \
+    && choco install -y visualstudio2019buildtools --version 16.8.3 \
+       --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended"
 
 # Install CA certs, otherwise python won't be able to access some web sites
 # https://bugs.python.org/msg336806 
