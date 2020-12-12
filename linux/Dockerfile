@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 RUN apt-get update && apt-get install -y \
