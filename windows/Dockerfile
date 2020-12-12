@@ -19,3 +19,7 @@ RUN choco install -y rust-ms --version 1.48.0
 RUN choco install -y visualstudio2019buildtools --version 16.8.3 \
     --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended"
 
+# Install CA certs, otherwise python won't be able to access some web sites
+# https://bugs.python.org/msg336806 
+RUN certutil -generateSSTFromWU roots.sst && certutil -addstore -f root roots.sst && del roots.sst
+
