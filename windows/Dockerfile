@@ -12,7 +12,8 @@ RUN powershell -Command \
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')); \
     choco feature disable --name showDownloadProgress
 
-RUN choco install -y git \
+# git.install: we need bash.exe to run certain scripts on azure
+RUN choco install -y git.install --params "/GitAndUnixToolsOnPath" \
     && choco install -y python2 --version 2.7.18 \
     && choco install -y llvm --version 11.0.0 \
     && choco install -y rust-ms --version 1.48.0 \
