@@ -13,11 +13,12 @@ RUN powershell -Command \
     choco feature disable --name showDownloadProgress
 
 # git.install: we need bash.exe to run certain scripts on azure
+# rustup: checksums do not match
 RUN choco install -y git.install --params "/GitAndUnixToolsOnPath" \
     && choco install -y python2 --version 2.7.18 \
     && choco install -y llvm --version 11.0.0 \
     && choco install -y rust-ms --version 1.48.0 \
-    && choco install -y rustup --version 1.22.1 --ignore-checksums \
+    && choco install -y rustup.install --version 1.22.1 --ignore-checksums \
     && choco install -y visualstudio2019buildtools --version 16.8.3 \
        --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended"
 
