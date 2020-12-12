@@ -12,6 +12,7 @@ RUN powershell -Command \
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')); \
     choco feature disable --name showDownloadProgress
 
+RUN choco install -y git
 RUN choco install -y python2 --version 2.7.18
 RUN choco install -y llvm --version 11.0.0
 RUN choco install -y rust-ms --version 1.48.0
