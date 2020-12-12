@@ -1,5 +1,6 @@
 # We use windows server, because of the script execution policies on regular windows images.
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
+LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
 
 # https://github.com/StefanScherer/dockerfiles-windows/blob/main/chocolatey/Dockerfile
 
