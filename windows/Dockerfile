@@ -1,13 +1,16 @@
-# We use windows server, because of the script execution policies on regular windows images.
-# FROM mcr.microsoft.com/windows/servercore:ltsc2019
 # Use .NET 4.8 (otherwise a reboot may be required when installing build tools)
-FROM mcr.microsoft.com/dotnet/framework/runtime:4.8
+# Use ltsc2019 (saves about 5GB compared to a full Windows) and to hope we can
+# be stable for a while. ltsc2019 is Windows 10 Version 1809
+FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
 
 # no powershell by defaut
 SHELL ["cmd", "/S", "/C"]
 
 COPY arial.ttf C:/Windows/Fonts/
+# Taken from the image: mcr.microsoft.com/windows:1809 
+COPY opengl32.dll glu32.dll C:/Windows/System32/
+
 RUN powershell -Command 'Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -name "Arial (TrueType)" -value "arial.ttf" -type STRING'
 
 # https://github.com/StefanScherer/dockerfiles-windows/blob/main/chocolatey/Dockerfile

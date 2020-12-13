@@ -2,10 +2,12 @@ MIT License
 
 Copyright (c) 2020 rust-skia Contributors
 
-Note: The windows/arial.ttf font file is not covered by this license,
-additional conditions may apply: 
+Third party content copyright & license holders:
 
-https://www.fonts.com/font/monotype/arial/licenses
+- windows/arial.ttf
+  https://www.fonts.com/font/monotype/arial/licenses
+- windows/opengl32.dll & windows/glu32.dll
+  https://hub.docker.com/_/microsoft-windows (LICENSE section)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
