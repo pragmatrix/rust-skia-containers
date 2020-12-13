@@ -7,6 +7,9 @@ LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-co
 # no powershell by defaut
 SHELL ["cmd", "/S", "/C"]
 
+COPY arial.ttf C:/Windows/Fonts/
+RUN powershell -Command 'Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -name "Arial (TrueType)" -value "arial.ttf" -type STRING'
+
 # https://github.com/StefanScherer/dockerfiles-windows/blob/main/chocolatey/Dockerfile
 RUN powershell -Command \
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')); \
