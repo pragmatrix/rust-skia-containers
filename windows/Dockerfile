@@ -26,7 +26,9 @@ RUN choco install -y git.install --params "/GitAndUnixToolsOnPath" \
     && choco install -y rust-ms --version 1.48.0 \
     && choco install -y rustup.install --version 1.22.1 --ignore-checksums \
     && choco install -y visualstudio2019buildtools --version 16.8.3 \
-       --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools;includeRecommended"
+       --package-parameters "--nocache --add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" \
+	&& rmdir "C:\ProgramData\Package Cache" /s /q \
+	&& rmdir "C:\Users\ContainerAdministrator\AppData\Local\Temp\chocolatey" /s /q
 
 # Install CA certs, otherwise python won't be able to access some web sites
 # https://bugs.python.org/msg336806 
