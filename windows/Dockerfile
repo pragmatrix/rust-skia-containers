@@ -23,7 +23,7 @@ RUN powershell -Command \
 RUN choco install -y git.install --params "/GitAndUnixToolsOnPath" \
     && choco install -y python2 --version 2.7.18 \
     && choco install -y llvm --version 12.0.0 \
-    && choco install -y rust-ms --version 1.52.0 \
+    && choco install -y rust-ms --version 1.52.1 \
     && choco install -y rustup.install --version 1.22.1 --ignore-checksums \
     && choco install -y visualstudio2019buildtools --version 16.9.4.0 \
        --package-parameters "--nocache --add Microsoft.VisualStudio.Workload.VCTools;includeRecommended" \
