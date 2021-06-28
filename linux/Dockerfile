@@ -1,5 +1,12 @@
+# This container was created because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
+# https://github.com/rust-skia/rust-skia/issues/393
 FROM ubuntu:18.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+# For github actions we need a newer git version
+RUN apt-get update \
+ && apt-get install -y software-properties-common \
+ && add-apt-repository ppa:git-core/ppa -y
+
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
@@ -29,8 +36,9 @@ ENV ANDROID_HOST=linux-x86_64
 # We use HTTP/1.1, because of spurious HTTP/2 framing errors in the Azure / GitHub cloud.
 
 RUN curl --http1.1 -sSf -o android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-${ANDROID_HOST}.zip \
-    && unzip android-ndk.zip \
-    && rm android-ndk.zip
+ && unzip android-ndk.zip \
+ && rm android-ndk.zip
+
 ENV ANDROID_NDK=/android-ndk-${ANDROID_NDK_VERSION}
 ENV PATH=${PATH}:/android-ndk-${ANDROID_NDK_VERSION}/toolchains/llvm/prebuilt/${ANDROID_HOST}/bin
 
