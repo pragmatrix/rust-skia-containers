@@ -30,7 +30,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install Android NDK
 
-ENV ANDROID_NDK_VERSION=r21d
+ENV ANDROID_NDK_VERSION=r21e
 ENV ANDROID_HOST=linux-x86_64
 
 # We use HTTP/1.1, because of spurious HTTP/2 framing errors in the Azure / GitHub cloud.
