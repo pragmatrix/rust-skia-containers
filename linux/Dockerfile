@@ -5,8 +5,7 @@ LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-co
 
 # Housekeeping
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y ca-certificates
-RUN update-ca-certificates
+RUN apt-get install -y ca-certificates && update-ca-certificates
 
 # For GitHub Actions we need a newer git version
 RUN apt-get install -y software-properties-common \
