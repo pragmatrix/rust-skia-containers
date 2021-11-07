@@ -19,6 +19,23 @@ jobs:
       run: docker tag rust-skia:linux ghcr.io/${{ github.repository_owner }}/rust-skia-linux:latest
     - name: Publish the Docker image
       run: docker push ghcr.io/${{ github.repository_owner }}/rust-skia-linux:latest
+  linux-arm64:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    # https://www.stereolabs.com/docs/docker/building-arm-container-on-x86/
+    - name: Setting Up Docker ARM Emulation
+      run: |
+        sudo apt-get install qemu binfmt-support qemu-user-static
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - name: Build the Docker image
+      run: docker build linux-arm64 --tag rust-skia:linux-arm64
+    - name: Log into GitHub Container Registry
+      run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Tag the image 
+      run: docker tag rust-skia:linux-arm64 ghcr.io/${{ github.repository_owner }}/rust-skia-linux-arm64:latest
+    - name: Publish the Docker image
+      run: docker push ghcr.io/${{ github.repository_owner }}/rust-skia-linux-arm64:latest
 
   windows:
     runs-on: windows-2019
