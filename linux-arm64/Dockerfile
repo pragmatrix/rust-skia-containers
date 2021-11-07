@@ -4,7 +4,7 @@ LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-co
 
 # Housekeeping
 RUN apt-get update && apt-get -y upgrade
-RUN udpate-ca-certificates
+RUN update-ca-certificates
 
 # Preinstall tzdata, so that it does not when installed as a transitive dependency later.
 ENV TZ=Europe/Berlin
