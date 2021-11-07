@@ -2,7 +2,9 @@
 FROM arm64v8/ubuntu:20.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
 
-RUN apt-get update 
+# Housekeeping
+RUN apt-get update && apt-get -y upgrade
+RUN udpate-ca-certificates
 
 # Preinstall tzdata, so that it does not when installed as a transitive dependency later.
 ENV TZ=Europe/Berlin

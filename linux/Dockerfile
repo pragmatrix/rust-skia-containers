@@ -2,10 +2,15 @@
 # https://github.com/rust-skia/rust-skia/issues/393
 FROM ubuntu:18.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
-# For github actions we need a newer git version
-RUN apt-get update \
- && apt-get install -y software-properties-common \
- && add-apt-repository ppa:git-core/ppa -y
+
+# Housekeeping
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get install -y ca-certificates
+RUN update-ca-certificates
+
+# For GitHub Actions we need a newer git version
+RUN apt-get install -y software-properties-common \
+	&& add-apt-repository ppa:git-core/ppa -y
 
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
