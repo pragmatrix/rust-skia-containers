@@ -48,7 +48,4 @@ SHELL ["/bin/bash", "-c"]
 
 RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk install 3.1.2) \
-	&& (cd emsdk && ./emsdk activate 3.1.2) \
-	&& (source /emsdk/emsdk_env.sh)
-
-ENV EMCC_CFLAGS="-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s MAX_WEBGL_VERSION=2"
+	&& (cd emsdk && ./emsdk activate 3.1.2)
