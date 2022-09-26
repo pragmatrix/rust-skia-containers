@@ -27,6 +27,9 @@ RUN apt-get install -y \
 	pkg-config \
 	python
 
+# Support synchronizing Skia dependencies:
+RUN git config --global --add safe.directory '*'
+
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
