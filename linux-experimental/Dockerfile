@@ -32,6 +32,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 ENV ANDROID_NDK_VERSION=r25b
 ENV ANDROID_HOST=linux-x86_64
+ENV ANDROID_CLANG_VER=14.0.6
 
 # We use HTTP/1.1, because of spurious HTTP/2 framing errors in the Azure / GitHub cloud.
 
@@ -41,6 +42,14 @@ RUN curl --http1.1 -sSf -o android-ndk.zip https://dl.google.com/android/reposit
 
 ENV ANDROID_NDK=/android-ndk-${ANDROID_NDK_VERSION}
 ENV PATH=${PATH}:/android-ndk-${ANDROID_NDK_VERSION}/toolchains/llvm/prebuilt/${ANDROID_HOST}/bin
+
+# <https://github.com/rust-windowing/android-ndk-rs/issues/149>
+
+ENV ANDROID_NDK_LIB_LINUX=${ANDROID_NDK}/toolchains/llvm/prebuilt/${ANDROID_HOST}/lib64/clang/${ANDROID_CLANG_VER}/lib/linux
+RUN cd ${ANDROID_NDK_LIB_LINUX}/aarch64 && cp libunwind.a libgcc.a
+RUN cd ${ANDROID_NDK_LIB_LINUX}/arm && cp libunwind.a libgcc.a
+RUN cd ${ANDROID_NDK_LIB_LINUX}/i386 && cp libunwind.a libgcc.a
+RUN cd ${ANDROID_NDK_LIB_LINUX}/x86_64 && cp libunwind.a libgcc.a
 
 # wasm32-unknown-emscripten
 
