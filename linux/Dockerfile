@@ -1,5 +1,5 @@
 # This container was created because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
-# https://github.com/rust-skia/rust-skia/issues/393
+# <https://github.com/rust-skia/rust-skia/issues/393>
 FROM ubuntu:18.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
 # For github actions we need a newer git version
@@ -60,3 +60,7 @@ ENV EMSCRIPTEN_VER=3.1.23
 RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk install ${EMSCRIPTEN_VER}) \
 	&& (cd emsdk && ./emsdk activate ${EMSCRIPTEN_VER})
+
+# Needed for cross compilation to aarch64-unknown-linux-gnu (freetype-sys)
+
+RUN apt-get install -y cmake
