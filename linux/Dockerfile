@@ -61,6 +61,5 @@ RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk install ${EMSCRIPTEN_VER}) \
 	&& (cd emsdk && ./emsdk activate ${EMSCRIPTEN_VER})
 
-# Needed for cross compilation to aarch64-unknown-linux-gnu (freetype-sys)
-
-RUN apt-get install -y cmake
+# Needed for cross compilation to aarch64-unknown-linux-gnu
+RUN apt-get install -y g++-aarch64-linux-gnu
