@@ -13,7 +13,7 @@ RUN apt-get update \
 RUN apt-get update && apt-get install -y \
 	curl \
 	gcc \
-	g++-9 \
+	g++-10 \
 	git \
 	libgl1 \
 	libgl1-mesa-dev \
@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
 	python \
 	unzip \
 	libgles2-mesa-dev
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-9 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-9
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-10 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
