@@ -12,20 +12,20 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install tzdata
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
 RUN apt-get install -y \
-	clang \
 	curl \
-	g++-9 \
 	gcc \
+	g++-10 \
 	git \
-	libfontconfig1-dev \
 	libgl1 \
 	libgl1-mesa-dev \
 	libgles2-mesa-dev \
 	libssl-dev \
+	libfontconfig1-dev \
 	mesa-common-dev \
-	ninja.build \
 	pkg-config \
-	python
+	python \
+	clang \
+	ninja.build
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
