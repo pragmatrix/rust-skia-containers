@@ -55,7 +55,7 @@ RUN cd ${ANDROID_NDK_LIB_LINUX}/x86_64 && cp libunwind.a libgcc.a
 
 SHELL ["/bin/bash", "-c"]
 
-ENV EMSCRIPTEN_VER=3.1.23
+ENV EMSCRIPTEN_VER=3.1.59
 
 RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk install ${EMSCRIPTEN_VER}) \
