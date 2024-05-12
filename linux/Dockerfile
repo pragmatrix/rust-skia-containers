@@ -7,13 +7,20 @@ RUN apt-get update \
  && apt-get install -y software-properties-common \
  && add-apt-repository ppa:git-core/ppa -y
 
+RUN apt-get install -y wget
+
+## Add llvm package repository for ubuntu 18 (bionic)
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-16 main"
+
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
+# clang-16 / g++-16 is needed for more recent emscripten builds.
 RUN apt-get update && apt-get install -y \
 	curl \
 	gcc \
-	g++-10 \
+	g++-16 \
 	git \
 	libgl1 \
 	libgl1-mesa-dev \
@@ -24,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 	python \
 	unzip \
 	libgles2-mesa-dev
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-10 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-16 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
