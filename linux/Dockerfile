@@ -52,6 +52,36 @@ RUN curl --http1.1 -sSf -o android-ndk.zip https://dl.google.com/android/reposit
 ENV ANDROID_NDK=/android-ndk-${ANDROID_NDK_VERSION}
 ENV PATH=${PATH}:/android-ndk-${ANDROID_NDK_VERSION}/toolchains/llvm/prebuilt/${ANDROID_HOST}/bin
 
+# Node 20
+
+# <https://github.com/nodesource/distributions/issues/1392#issuecomment-1815887430>
+
+# Start by installing Node 20:
+
+RUN apt-get install -y python3 g++ make python3-pip gcc bison
+RUN curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n
+RUN bash n 20
+
+# Node 20 is now at /usr/local/bin/node, but glibc 2.28 is missing:
+# node: /lib/aarch64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by node)
+# /usr/local/bin/node: /lib/aarch64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by /usr/local/bin/node)
+
+# Build and install glibc 2.28:
+RUN apt install -y gawk
+RUN	wget -c https://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
+RUN tar -zxf glibc-2.28.tar.gz
+RUN cd glibc-2.28 && mkdir glibc-build
+RUN cd glibc-2.28/glibc-build && ../configure --prefix=/opt/glibc-2.28
+RUN cd glibc-2.28/glibc-build && make -j
+RUN cd glibc-2.28/glibc-build && make install
+RUN rm -fr glibc-2.28 glibc-2.28.tar.gz
+	 
+# Patch the installed Node 20 to work with /opt/glibc-2.28 instead: 
+RUN apt install -y patchelf
+RUN patchelf --set-interpreter /opt/glibc-2.28/lib/ld-linux-x86-64.so.2 --set-rpath /opt/glibc-2.28/lib/:/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/ /usr/local/bin/node
+# Et voilà:
+# RUN /usr/local/bin/node --version
+
 # wasm32-unknown-emscripten
 
 SHELL ["/bin/bash", "-c"]
@@ -64,3 +94,4 @@ RUN git clone https://github.com/emscripten-core/emsdk.git \
 
 # Needed for cross compilation to aarch64-unknown-linux-gnu
 RUN apt-get install -y g++-aarch64-linux-gnu
+
