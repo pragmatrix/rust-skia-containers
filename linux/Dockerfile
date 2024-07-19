@@ -18,6 +18,7 @@ RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 m
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
 # clang-16 / g++-16 is needed for more recent emscripten builds.
+# make is needed for supplemental builds.
 RUN apt-get update && apt-get install -y \
 	curl \
 	gcc \
@@ -31,7 +32,8 @@ RUN apt-get update && apt-get install -y \
 	mesa-common-dev \
 	pkg-config \
 	python \
-	unzip
+	unzip \
+	make
 
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-16 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16
 
