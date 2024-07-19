@@ -33,7 +33,8 @@ RUN apt-get update && apt-get install -y \
 	pkg-config \
 	python \
 	unzip \
-	make
+	make \
+	libwayland-dev
 
 RUN update-alternatives \
 	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
