@@ -1,6 +1,6 @@
 # This container is based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # <https://github.com/rust-skia/rust-skia/issues/393>
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
 
 # For github actions we need a newer git version
@@ -10,9 +10,9 @@ RUN apt-get update \
 
 RUN apt-get install -y wget
 
-## Add llvm package repository for ubuntu 18 (bionic)
+## Add llvm package repository for ubuntu 20 (focal))
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-16 main"
+RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 main"
 
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
