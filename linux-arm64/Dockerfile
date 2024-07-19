@@ -30,31 +30,48 @@ RUN apt-get update && apt-get install -y \
 	mesa-common-dev \
 	pkg-config \
 	python \
-	unzip
+	unzip \
+	make \
+	libwayland-dev
 
-# aarch64 specific
+RUN update-alternatives \
+	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
+	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 \
+	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16 \
+	--slave /usr/bin/c++ c++ /usr/bin/clang++-16
 
-RUN apt-get install -y \
-	ninja.build
+# Ninja
 
+RUN apt-get install -y ninja.build
 ENV SKIA_NINJA_COMMAND=/usr/bin/ninja
 
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-16 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16
+# Rust
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# Install Android NDK
+# Android NDK
 
 ENV ANDROID_NDK_VERSION=r26d
 ENV ANDROID_HOST=linux-aarch64
-
-# HTTP/1.1, because of spurious HTTP/2 framing errors in the Azure / GitHub cloud.
-
-RUN curl --http1.1 -sSf -o android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip \
+RUN curl -sSf -o android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip \
  && unzip android-ndk.zip \
  && rm android-ndk.zip
-
 ENV ANDROID_NDK=/android-ndk-${ANDROID_NDK_VERSION}
 ENV PATH=${PATH}:/android-ndk-${ANDROID_NDK_VERSION}/toolchains/llvm/prebuilt/${ANDROID_HOST}/bin
 
+# Emscripten SDK
+
+ENV EMSCRIPTEN_VER=3.1.59
+RUN git clone https://github.com/emscripten-core/emsdk.git \
+	&& (cd emsdk && ./emsdk install ${EMSCRIPTEN_VER}) \
+	&& (cd emsdk && ./emsdk activate ${EMSCRIPTEN_VER})
+ENV EMSDK=/emsdk
+
+# Wasi SDK
+
+RUN curl -L -o wasi-sdk.tar.gz https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-22/wasi-sdk-22.0-linux.tar.gz \
+	&& tar -xzf wasi-sdk.tar.gz \
+	&& rm wasi-sdk.tar.gz \
+	&& mv wasi-sdk-22.0 /opt/
+ENV WASI_SDK=/opt/wasi-sdk-22.0
