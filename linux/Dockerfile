@@ -1,4 +1,4 @@
-# This container is based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
+# This container was based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # <https://github.com/rust-skia/rust-skia/issues/393>
 FROM ubuntu:20.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
