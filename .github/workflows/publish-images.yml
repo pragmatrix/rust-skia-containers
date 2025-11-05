@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:
   linux:
     runs-on: ubuntu-22.04
     steps:
@@ -19,6 +18,20 @@ jobs:
       run: docker tag rust-skia:linux ghcr.io/${{ github.repository_owner }}/rust-skia-linux:latest
     - name: Publish the Docker image
       run: docker push ghcr.io/${{ github.repository_owner }}/rust-skia-linux:latest
+
+jobs:
+  archlinux:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build archlinux --tag rust-skia:archlinux
+    - name: Log into GitHub Container Registry
+      run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Tag the image
+      run: docker tag rust-skia:archlinux ghcr.io/${{ github.repository_owner }}/rust-skia-archlinux:latest
+    - name: Publish the Docker image
+      run: docker push ghcr.io/${{ github.repository_owner }}/rust-skia-arhlinux:latest
 
   linux-experimental:
       runs-on: ubuntu-22.04
