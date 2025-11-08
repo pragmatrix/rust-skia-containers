@@ -41,6 +41,7 @@ RUN update-alternatives \
 	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
 	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 \
 	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16 \
+	--slave /usr/bin/cc cc /usr/bin/clang-16 \
 	--slave /usr/bin/c++ c++ /usr/bin/clang++-16
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
