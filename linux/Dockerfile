@@ -35,7 +35,8 @@ RUN apt-get update && apt-get install -y \
 	python \
 	unzip \
 	make \
-	libwayland-dev
+	libwayland-dev \
+	ninja-build
 
 RUN update-alternatives \
 	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
