@@ -1,7 +1,7 @@
 # This container is based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # <https://github.com/rust-skia/rust-skia/issues/393>
 FROM ubuntu:20.04
-LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-containers
 
 # For github actions we need a newer git version
 RUN apt-get update \
@@ -17,11 +17,12 @@ RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 m
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
+# gcc-10 so that libstdc++ 9 headers are installed in `/usr/include/c++/9` that contain the `compare` header file (since m143, c++20).
 # clang-16 / g++-16 is needed for more recent emscripten builds.
 # make is needed for supplemental builds.
 RUN apt-get update && apt-get install -y \
 	curl \
-	gcc \
+	gcc-10 \
 	g++-16 \
 	git \
 	libgl1 \
