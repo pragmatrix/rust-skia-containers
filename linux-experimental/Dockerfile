@@ -1,40 +1,59 @@
-# This container was created because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
-# https://github.com/rust-skia/rust-skia/issues/393
-FROM ubuntu:18.04
-LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+# This container is based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
+# <https://github.com/rust-skia/rust-skia/issues/393>
+FROM ubuntu:20.04
+LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-containers
+
 # For github actions we need a newer git version
 RUN apt-get update \
  && apt-get install -y software-properties-common \
  && add-apt-repository ppa:git-core/ppa -y
 
+RUN apt-get install -y wget
+
+## Add llvm package repository for ubuntu 20 (focal))
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 main"
+
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
+# gcc-10 so that libstdc++ 9 headers are installed in `/usr/include/c++/9` that contain the `compare` header file (since m143, c++20).
+# clang-16 / g++-16 is needed for more recent emscripten builds.
+# make is needed for supplemental builds.
 RUN apt-get update && apt-get install -y \
 	curl \
-	gcc \
-	g++-9 \
+	gcc-10 \
+	g++-16 \
 	git \
 	libgl1 \
 	libgl1-mesa-dev \
+	libgles2-mesa-dev \
 	libssl-dev \
 	libfontconfig1-dev \
 	mesa-common-dev \
 	pkg-config \
 	python \
 	unzip \
-	libgles2-mesa-dev
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-9 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-9
+	make \
+	libwayland-dev \
+	ninja-build
+
+RUN update-alternatives \
+	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
+	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 \
+	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16 \
+	--slave /usr/bin/cc cc /usr/bin/clang-16 \
+	--slave /usr/bin/c++ c++ /usr/bin/clang++-16
+
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install Android NDK
 
-ENV ANDROID_NDK_VERSION=r25b
+ENV ANDROID_NDK_VERSION=r26d
 ENV ANDROID_HOST=linux-x86_64
-ENV ANDROID_CLANG_VER=14.0.6
 
-# We use HTTP/1.1, because of spurious HTTP/2 framing errors in the Azure / GitHub cloud.
+# HTTP/1.1, because of spurious HTTP/2 framing errors in the Azure / GitHub cloud.
 
 RUN curl --http1.1 -sSf -o android-ndk.zip https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip \
  && unzip android-ndk.zip \
@@ -42,14 +61,6 @@ RUN curl --http1.1 -sSf -o android-ndk.zip https://dl.google.com/android/reposit
 
 ENV ANDROID_NDK=/android-ndk-${ANDROID_NDK_VERSION}
 ENV PATH=${PATH}:/android-ndk-${ANDROID_NDK_VERSION}/toolchains/llvm/prebuilt/${ANDROID_HOST}/bin
-
-# <https://github.com/rust-windowing/android-ndk-rs/issues/149>
-
-ENV ANDROID_NDK_LIB_LINUX=${ANDROID_NDK}/toolchains/llvm/prebuilt/${ANDROID_HOST}/lib64/clang/${ANDROID_CLANG_VER}/lib/linux
-RUN cd ${ANDROID_NDK_LIB_LINUX}/aarch64 && cp libunwind.a libgcc.a
-RUN cd ${ANDROID_NDK_LIB_LINUX}/arm && cp libunwind.a libgcc.a
-RUN cd ${ANDROID_NDK_LIB_LINUX}/i386 && cp libunwind.a libgcc.a
-RUN cd ${ANDROID_NDK_LIB_LINUX}/x86_64 && cp libunwind.a libgcc.a
 
 # wasm32-unknown-emscripten
 
@@ -60,3 +71,6 @@ ENV EMSCRIPTEN_VER=3.1.59
 RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk install ${EMSCRIPTEN_VER}) \
 	&& (cd emsdk && ./emsdk activate ${EMSCRIPTEN_VER})
+
+# Needed for cross compilation to aarch64-unknown-linux-gnu
+RUN apt-get install -y g++-aarch64-linux-gnu
