@@ -1,4 +1,4 @@
-# This container is based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
+# This container was based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # <https://github.com/rust-skia/rust-skia/issues/393>
 FROM ubuntu:20.04
 LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
@@ -19,6 +19,7 @@ RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 m
 # libgles2-mesa-dev for egl support.
 # clang-16 / g++-16 is needed for more recent emscripten builds.
 # make is needed for supplemental builds.
+# ninja-build for building Skia
 RUN apt-get update && apt-get install -y \
 	curl \
 	gcc \
@@ -34,7 +35,8 @@ RUN apt-get update && apt-get install -y \
 	python \
 	unzip \
 	make \
-	libwayland-dev
+	libwayland-dev \
+	ninja-build
 
 RUN update-alternatives \
 	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
