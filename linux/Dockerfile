@@ -36,7 +36,8 @@ RUN apt-get update && apt-get install -y \
 	unzip \
 	make \
 	libwayland-dev \
-	ninja-build
+	ninja-build \
+	libstdc++-10-dev
 
 RUN update-alternatives \
 	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
