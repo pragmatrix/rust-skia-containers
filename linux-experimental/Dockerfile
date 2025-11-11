@@ -10,6 +10,7 @@ RUN apt-get update \
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
+# libstdc++-10-dev for c++ 20 (since m143).
 RUN apt-get update && apt-get install -y \
 	curl \
 	gcc \
@@ -23,7 +24,9 @@ RUN apt-get update && apt-get install -y \
 	pkg-config \
 	python \
 	unzip \
-	libgles2-mesa-dev
+	libgles2-mesa-dev \
+	libstdc++-10-dev
+
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 90 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-9 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-9
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
