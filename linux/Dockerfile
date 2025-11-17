@@ -1,7 +1,7 @@
 # This container was based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # <https://github.com/rust-skia/rust-skia/issues/393>
-FROM ubuntu:20.04
-LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+FROM --platform=linux/amd64 ubuntu:20.04
+LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-containers
 
 # For github actions we need a newer git version
 RUN apt-get update \
@@ -39,12 +39,6 @@ RUN apt-get update && apt-get install -y \
 	ninja-build \
 	libstdc++-10-dev
 
-RUN update-alternatives \
-	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
-	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 \
-	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16 \
-	--slave /usr/bin/c++ c++ /usr/bin/clang++-16
-
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
@@ -73,4 +67,31 @@ RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk activate ${EMSCRIPTEN_VER})
 
 # Needed for cross compilation to aarch64-unknown-linux-gnu
-RUN apt-get install -y g++-aarch64-linux-gnu
+# Enable multiarch for arm64 to install cross-compilation libraries
+RUN dpkg --add-architecture arm64
+# Configure apt to use ports.ubuntu.com for arm64 packages
+RUN sed -i 's|^deb http://archive.ubuntu.com/ubuntu|deb [arch=amd64] http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list \
+	&& sed -i 's|^deb http://security.ubuntu.com/ubuntu|deb [arch=amd64] http://security.ubuntu.com/ubuntu|g' /etc/apt/sources.list \
+	&& echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" >> /etc/apt/sources.list \
+	&& echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" >> /etc/apt/sources.list \
+	&& echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" >> /etc/apt/sources.list \
+	&& echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	gcc-aarch64-linux-gnu \
+	g++-aarch64-linux-gnu \
+	libstdc++-10-dev:arm64 \
+	libgcc-10-dev:arm64
+
+# Set up alternatives after all packages are installed
+RUN update-alternatives \
+	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
+	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 \
+	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-16 100
+
+# Add script to test C++ include paths
+COPY linux/test_includes.sh /usr/local/bin/test_includes.sh
+RUN chmod +x /usr/local/bin/test_includes.sh
+
+# Run the include path tests
+RUN /usr/local/bin/test_includes.sh
