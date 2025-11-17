@@ -90,7 +90,7 @@ RUN update-alternatives \
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-16 100
 
 # Add script to test C++ include paths
-COPY linux/test_includes.sh /usr/local/bin/test_includes.sh
+COPY test_includes.sh /usr/local/bin/test_includes.sh
 RUN chmod +x /usr/local/bin/test_includes.sh
 
 # Run the include path tests
