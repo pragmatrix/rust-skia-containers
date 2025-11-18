@@ -77,8 +77,8 @@ RUN sed -i 's|^deb http://archive.ubuntu.com/ubuntu|deb [arch=amd64] http://arch
 	&& echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" >> /etc/apt/sources.list \
 	&& echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-security main restricted universe multiverse" >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	gcc-aarch64-linux-gnu \
-	g++-aarch64-linux-gnu \
+	gcc-10-aarch64-linux-gnu \
+	g++-10-aarch64-linux-gnu \
 	libstdc++-10-dev:arm64 \
 	libgcc-10-dev:arm64
 
