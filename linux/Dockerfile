@@ -89,6 +89,11 @@ RUN update-alternatives \
 	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-16 100
 
+# Set up alternatives for aarch64 cross-compiler
+RUN update-alternatives \
+	--install /usr/bin/aarch64-linux-gnu-gcc aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc-10 100 \
+	--slave /usr/bin/aarch64-linux-gnu-g++ aarch64-linux-gnu-g++ /usr/bin/aarch64-linux-gnu-g++-10
+
 # Add script to test C++ include paths
 COPY test_includes.sh /usr/local/bin/test_includes.sh
 RUN chmod +x /usr/local/bin/test_includes.sh
