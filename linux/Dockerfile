@@ -1,5 +1,7 @@
-# This container was based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
-# <https://github.com/rust-skia/rust-skia/issues/393>
+# This container was initially based on ubuntu 18 because we need to link with libstdc++ 6.0.25
+# because of ABI incompatibilities. <https://github.com/rust-skia/rust-skia/issues/393>. 
+#
+# So we keep this at the lowest supported and working ubuntu version for now.
 FROM --platform=linux/amd64 ubuntu:20.04
 LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-containers
 
@@ -60,7 +62,7 @@ ENV PATH=${PATH}:/android-ndk-${ANDROID_NDK_VERSION}/toolchains/llvm/prebuilt/${
 
 SHELL ["/bin/bash", "-c"]
 
-ENV EMSCRIPTEN_VER=3.1.59
+ENV EMSCRIPTEN_VER=5.0.3
 
 RUN git clone https://github.com/emscripten-core/emsdk.git \
 	&& (cd emsdk && ./emsdk install ${EMSCRIPTEN_VER}) \
