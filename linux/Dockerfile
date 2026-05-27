@@ -1,5 +1,9 @@
 # This container was based on ubuntu 18 because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # <https://github.com/rust-skia/rust-skia/issues/393>
+# libstdc++ versions used by this image:
+# - Current toolchain baseline: libstdc++-10-dev (amd64 and arm64).
+# - clang-16 and clang-20 on focal both depend on libstdc++-9-dev and libstdc++6 (>= 5.2).
+# - Switching this Dockerfile from clang-16 to clang-20 does not change the libstdc++ baseline.
 FROM --platform=linux/amd64 ubuntu:20.04
 LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-containers
 
@@ -12,18 +16,19 @@ RUN apt-get install -y wget
 
 ## Add llvm package repository for ubuntu 20 (focal))
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 main"
+RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-20 main"
 
 # unzip: for installing the Android NDK
 # libgl1 libgl1-mesa-dev mesa-common-dev: for builds that need OpenGL
 # libgles2-mesa-dev for egl support.
-# clang-16 / g++-16 is needed for more recent emscripten builds.
+# clang-20 / g++-10 is used on focal.
 # make is needed for supplemental builds.
 # ninja-build for building Skia
 RUN apt-get update && apt-get install -y \
 	curl \
+	clang-20 \
 	gcc \
-	g++-16 \
+	g++-10 \
 	git \
 	libgl1 \
 	libgl1-mesa-dev \
@@ -31,6 +36,7 @@ RUN apt-get update && apt-get install -y \
 	libssl-dev \
 	libfontconfig1-dev \
 	mesa-common-dev \
+	llvm-20-dev \
 	pkg-config \
 	python \
 	unzip \
@@ -84,10 +90,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Set up alternatives after all packages are installed
 RUN update-alternatives \
-	--install /usr/bin/clang clang /usr/bin/clang-16 90 \
-	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-16 \
-	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-16 100
+	--install /usr/bin/clang clang /usr/bin/clang-20 90 \
+	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-20 \
+	--slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-20
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-20 100
 
 # Set up alternatives for aarch64 cross-compiler
 RUN update-alternatives \
