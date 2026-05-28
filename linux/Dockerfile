@@ -5,7 +5,7 @@
 # - clang-16 and clang-20 on focal both depend on libstdc++-9-dev and libstdc++6 (>= 5.2).
 # - Switching this Dockerfile from clang-16 to clang-20 does not change the libstdc++ baseline.
 FROM --platform=linux/amd64 ubuntu:20.04
-LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-containers
+LABEL org.opencontainers.image.source=https://github.com/pragmatrix/rust-skia-images
 
 # For github actions we need a newer git version
 RUN apt-get update \

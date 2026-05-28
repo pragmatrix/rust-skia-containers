@@ -2,7 +2,7 @@
 # Use ltsc2019 (saves about 5GB compared to a full Windows) and to hope we can
 # be stable for a while. ltsc2019 is Windows 10 Version 1809
 FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
-LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-images
 
 # no powershell by defaut
 SHELL ["cmd", "/S", "/C"]

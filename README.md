@@ -1,3 +1,3 @@
-# Rust-Skia Build Containers
+# Rust-Skia Build Images
 
-This repository builds and publishes the containers the binaries of the Rust-Skia project are built with.
+This repository builds and publishes the images used to compile Rust-Skia project binaries.

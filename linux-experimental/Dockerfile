@@ -1,7 +1,7 @@
 # This container was created because we need to link with libstdc++ 6.0.25 because of ABI incompatibilities.
 # https://github.com/rust-skia/rust-skia/issues/393
 FROM ubuntu:18.04
-LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-images
 # For github actions we need a newer git version
 RUN apt-get update \
  && apt-get install -y software-properties-common \

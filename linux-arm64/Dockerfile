@@ -1,6 +1,6 @@
 # https://github.com/rust-skia/rust-skia/issues/535
 FROM arm64v8/ubuntu:20.04
-LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-containers
+LABEL org.opencontainers.image.source https://github.com/pragmatrix/rust-skia-images
 
 # For github actions we need a newer git version
 RUN apt-get update \
